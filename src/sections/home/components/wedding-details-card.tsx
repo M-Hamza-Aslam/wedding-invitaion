@@ -26,7 +26,7 @@ export const WeddingDetailsCard = ({
     start: date,
     end: new Date(date.getTime() + 5 * 60 * 60 * 1000), // 5 hours later
     description: t('details.join-us'),
-    location: venue.ceremony.address,
+    location: venue.address,
   };
 
   return (

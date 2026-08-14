@@ -117,6 +117,7 @@ export default function HomeView() {
         <ClosingMessage
           bride={WEDDING_CONFIG.bride.fullName}
           groom={WEDDING_CONFIG.groom.fullName}
+          fatherName={WEDDING_CONFIG.groom.fatherName}
         />
       </section>
 

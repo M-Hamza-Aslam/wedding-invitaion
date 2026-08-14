@@ -14,34 +14,14 @@ export const EventSchedule = () => {
 
   const scheduleItems = [
     {
-      time: '3:30 PM',
+      time: '9:00 PM',
       event: t('schedule.guest-arrival'),
       description: t('schedule.welcome-drinks'),
     },
     {
-      time: '4:00 PM',
-      event: t('schedule.wedding-ceremony'),
-      description: t('schedule.vows'),
-    },
-    {
-      time: '4:30 PM',
-      event: t('schedule.photography'),
-      description: t('schedule.welcome-drink'),
-    },
-    {
-      time: '6:30 PM',
+      time: '11:00 PM',
       event: t('schedule.reception-begins'),
       description: t('schedule.dinner-celebration'),
-    },
-    {
-      time: '7:30 PM',
-      event: t('schedule.first-dance'),
-      description: t('schedule.special-moment'),
-    },
-    {
-      time: '8:00 PM',
-      event: t('schedule.dancing-party'),
-      description: t('schedule.celebration-continues'),
     },
     {
       time: '12:00 AM',
@@ -79,23 +59,28 @@ export const EventSchedule = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: inView ? 1 : 0, y: inView ? 0 : 30 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                className={`relative flex items-center ${
-                  index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
-                } flex-row`}
+                className="relative flex items-center"
               >
                 {/* Timeline dot */}
                 <div className="absolute left-4 md:left-1/2 transform md:-translate-x-1/2 w-4 h-4 bg-rose-400 rounded-full border-4 border-white shadow-lg z-10"></div>
 
-                {/* Content */}
+                {/* Content — a true half-width column pinned to the correct
+                    side of the timeline, not just a full-width block with
+                    right/left-aligned text (which left the time badge, a
+                    flex row, stuck on the left regardless of text align) */}
                 <div
-                  className={`flex-1 ${
+                  className={`w-full md:w-[calc(50%-2rem)] pl-12 md:pl-0 ${
                     index % 2 === 0
-                      ? 'md:text-right md:pr-8'
-                      : 'md:text-left md:pl-8'
-                  } pl-12 md:pl-0`}
+                      ? 'md:mr-auto md:pr-8 md:text-right'
+                      : 'md:ml-auto md:pl-8 md:text-left'
+                  }`}
                 >
                   <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
-                    <div className="flex items-center mb-2">
+                    <div
+                      className={`flex items-center mb-2 ${
+                        index % 2 === 0 ? 'md:justify-end' : 'md:justify-start'
+                      }`}
+                    >
                       <span className="bg-rose-100 text-rose-700 px-3 py-1 rounded-full text-xs sm:text-sm font-medium">
                         {item.time}
                       </span>

@@ -7,9 +7,14 @@ import { useInView } from 'react-intersection-observer';
 interface ClosingMessageProps {
   bride: string;
   groom: string;
+  fatherName: string;
 }
 
-export const ClosingMessage = ({ bride, groom }: ClosingMessageProps) => {
+export const ClosingMessage = ({
+  bride,
+  groom,
+  fatherName,
+}: ClosingMessageProps) => {
   const { t } = useTranslation('home');
 
   const [ref, inView] = useInView({
@@ -20,7 +25,7 @@ export const ClosingMessage = ({ bride, groom }: ClosingMessageProps) => {
   return (
     <div
       ref={ref}
-      className="py-20 px-4 bg-gradient-to-br from-rose-100 to-pink-200"
+      className="pt-20 pb-6 px-4 bg-gradient-to-br from-rose-100 to-pink-200"
     >
       <div className="max-w-4xl mx-auto text-center">
         <motion.div
@@ -42,13 +47,15 @@ export const ClosingMessage = ({ bride, groom }: ClosingMessageProps) => {
           className="bg-white/60 backdrop-blur-sm rounded-3xl p-8 md:p-12 shadow-xl border border-white/40 mb-12"
         >
           <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-700 leading-relaxed mb-6 font-light">
-            &quot;{t('closing-message.quote')}&quot;
+            &quot;
+            {t('closing-message.quote', { groomName: groom, brideName: bride })}
+            &quot;
           </p>
           <div className="text-base sm:text-lg text-gray-600">
             {t('closing-message.with-love')}
           </div>
           <div className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-serif text-rose-600 mt-2">
-            {groom} & {bride}
+            {t('letter.mr-and-mrs')} {fatherName}
           </div>
         </motion.div>
 
@@ -67,10 +74,6 @@ export const ClosingMessage = ({ bride, groom }: ClosingMessageProps) => {
               💕
             </span>
           </div>
-
-          <p className="text-sm sm:text-base text-gray-600">
-            #FiqriAndMio2025 #LoveWins #ForeverStartsNow
-          </p>
         </motion.div>
 
         {/* Footer */}
@@ -78,10 +81,17 @@ export const ClosingMessage = ({ bride, groom }: ClosingMessageProps) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: inView ? 1 : 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="mt-16 pt-8 border-t border-white/40"
+          className="mt-6 pt-8 border-t border-white/40"
         >
+          <p
+            dir="rtl"
+            lang="ar"
+            className="font-amiri text-base sm:text-lg text-rose-600 mb-3 leading-relaxed"
+          >
+            اللَّهُمَّ بَارِكْ لَهُمَا وَبَارِكْ عَلَيْهِمَا
+          </p>
           <p className="text-xs sm:text-sm text-gray-500">
-            Questions? Contact us at wedding@fihaa.my.id
+            Made with 💕 for our special day
           </p>
         </motion.div>
       </div>

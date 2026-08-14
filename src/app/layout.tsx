@@ -3,6 +3,7 @@ import { Poppins, Amiri } from 'next/font/google';
 import './globals.css';
 import { LangProvider, LocalizationProvider } from '@/locales';
 import { Toaster } from 'sonner';
+import { WEDDING_CONFIG } from '@/constants';
 
 const poppins = Poppins({
   variable: '--font-poppins',
@@ -16,10 +17,11 @@ const amiri = Amiri({
   weight: ['400', '700'],
 });
 
+const { bride, groom } = WEDDING_CONFIG;
+
 export const metadata: Metadata = {
-  title: 'The Wedding of Fiqri & Beloved',
-  description:
-    'Join us in celebrating the union of Fiqri and his beloved. Discover our love story, wedding details, and more.',
+  title: `The Wedding of ${groom.name} & ${bride.name}`,
+  description: `Join us in celebrating the wedding of ${groom.fullName} and ${bride.fullName}. Discover our wedding events, venue details, and more.`,
 };
 
 export default function RootLayout({

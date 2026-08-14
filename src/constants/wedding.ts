@@ -15,15 +15,11 @@ export const WEDDING_CONFIG = {
     photo: '/assets/images/groom-circle.png',
   },
   venue: {
-    ceremony: {
-      name: 'Masjid Songkok Recca Bone',
-      address: 'Jl. Jend. Ahmad Yani',
-      time: '4:00 PM',
-    },
-    reception: {
-      name: 'Hotel Novena Bone',
-      address: 'Jl. Jend. Ahmad Yani No.25',
-      time: '6:30 PM',
-    },
+    name: 'Barzaan Banquet',
+    address:
+      'Iqbal Shaheen Rd, Karachi cantonment Fowler Lines, Saddar Town, Karachi',
+    mapEmbedUrl:
+      'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3620.1706595776755!2d67.0318919748265!3d24.85802024535627!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3eb33f41a8a0a859%3A0x9fe4623795273421!2sBarzaan%20Banquet!5e0!3m2!1sen!2s!4v1786747079165!5m2!1sen!2s',
+    mapLink: 'https://maps.app.goo.gl/y7deTiB7PCPDi9yh8',
   },
 };

@@ -13,8 +13,8 @@
   },
   "closing-message": {
     "title": " We Can't Wait to Celebrate",
-    "quote": "Your presence in our lives has been a blessing, and having you celebrate this special day with us would make our joy complete. Thank you for being part of our love story.",
-    "with-love": "With all our love,",
+    "quote": "Your presence means the world to us as we celebrate the wedding of our son, {{groomName}}, and his bride, {{brideName}}. Thank you for being part of this beautiful chapter in our family's story.",
+    "with-love": "With heartfelt gratitude,",
     "hashtags": "#FiqriAndMio2025 #LoveWins #ForeverStartsNow",
     "contact": "Questions? Contact us at wedding@fihaa.my.id"
   },
@@ -38,8 +38,8 @@
     "love-quote": "You’re the one I want to share every sunrise and sunset with."
   },
   "details": {
-    "title": "Wedding Details",
-    "date": "Save the Date",
+    "title": "Wedding Events",
+    "date": "Walima",
     "time": "Time",
     "day": "Day",
     "month": "Month",
@@ -67,6 +67,8 @@
     "parking": "Parking",
     "valet-available": "Valet Available",
     "contact": "Contact",
+    "seating": "Seating",
+    "seating-separate": "Separate for Men & Women",
     "our-wedding-day": "Our Wedding Day",
     "join-us": "Join us for our special day!"
   },
@@ -80,8 +82,8 @@
     "ceremony-time": "Wedding Ceremony",
     "reception-time": "Reception",
     "party": "After Party",
-    "location-title": "Venue & Location",
-    "location-subtitle": "Join us at these beautiful locations as we celebrate our special day",
+    "location-title": "Venues & Location",
+    "location-subtitle": "Join us at this beautiful venue as we celebrate our special day",
     "ceremony-details": "Ceremony Details",
     "reception-details": "Reception Details",
     "arrive-early": "Please arrive 15 minutes early",
@@ -149,15 +151,15 @@
   "navigation": {
     "home": "Home",
     "couple": "Couple",
-    "details": "Details",
-    "venue": "Venue",
+    "details": "Events",
+    "venue": "Venues",
     "gallery": "Gallery",
     "rsvp": "RSVP Now"
   },
   "schedule": {
     "title": "Timeline of Events",
     "guest-arrival": "Guest Arrival & Seating",
-    "welcome-drinks": "Welcome drinks available",
+    "welcome-drinks": "Meet and Greet",
     "wedding-ceremony": "Wedding Ceremony",
     "vows": "Exchange of vows",
     "photography": "Photography Session",
