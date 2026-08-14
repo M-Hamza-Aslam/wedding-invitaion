@@ -10,6 +10,38 @@ interface LetterAnimationProps {
   coupleName: string;
 }
 
+// Tiny feTurbulence noise baked into a static SVG, used as a tiled
+// background-image so the envelope paper doesn't read as a flat UI gradient.
+// (Static data URI, not a runtime filter, so it's cheap on low-end phones.)
+const PAPER_GRAIN =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E";
+
+// Two thin diagonal bands converging near the flap's fold point, standing in
+// for the side-flap seams you'd see folded behind a real envelope's face.
+const SEAM_LINES_STYLE = {
+  backgroundImage:
+    'linear-gradient(122deg, transparent 0 48.4%, rgba(190,50,90,0.12) 48.4% 49.4%, transparent 49.4% 100%),' +
+    'linear-gradient(58deg, transparent 0 48.4%, rgba(190,50,90,0.12) 48.4% 49.4%, transparent 49.4% 100%)',
+};
+
+// Fixed (non-random) scatter targets for the wax-seal "crack" shards, so the
+// shatter is deterministic — computed once at module load, not per render.
+const SEAL_SHARDS = [10, 70, 130, 190, 250, 310].map((deg, i) => {
+  const rad = (deg * Math.PI) / 180;
+  const dist = 40 + (i % 2) * 12;
+
+  return { x: Math.cos(rad) * dist, y: Math.sin(rad) * dist, rotate: deg };
+});
+
+function getMonogram(coupleName: string) {
+  const initials = coupleName
+    .split('&')
+    .map((part) => part.trim().charAt(0).toUpperCase())
+    .filter(Boolean);
+
+  return initials.length >= 2 ? `${initials[0]} & ${initials[1]}` : (initials[0] ?? '♥');
+}
+
 export const LetterAnimation = ({
   onOpen,
   coupleName,
@@ -19,6 +51,8 @@ export const LetterAnimation = ({
 
   const toName =
     searchParams.get('to') || searchParams.get('toName') || t('letter.guest');
+
+  const monogram = getMonogram(coupleName);
 
   const [isOpening, setIsOpening] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -115,7 +149,7 @@ export const LetterAnimation = ({
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 1 }}
             className="relative mx-auto"
-            style={{ perspective: '1000px' }}
+            style={{ perspective: '1200px' }}
           >
             <motion.div
               className="relative cursor-pointer"
@@ -125,55 +159,171 @@ export const LetterAnimation = ({
                 randomizeSparkles();
               }}
               onHoverEnd={() => setIsHovered(false)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
             >
-              {/* Envelope Back */}
+              {/* Envelope Body (back panel + paper texture + seams) */}
               <motion.div
-                className="w-80 h-56 sm:w-96 sm:h-64 bg-gradient-to-br from-rose-200 to-pink-300 rounded-lg shadow-2xl relative mx-auto"
+                className="w-80 h-56 sm:w-96 sm:h-64 rounded-[3px] relative mx-auto z-10"
+                style={{
+                  backgroundImage:
+                    'linear-gradient(135deg,#fef3f5 0%,#fbe1e7 45%,#f6c9d4 100%)',
+                  boxShadow:
+                    '0 1px 1px rgba(160,40,80,0.15), 0 10px 20px -8px rgba(160,40,80,0.3), 0 28px 46px -18px rgba(160,40,80,0.28)',
+                }}
                 animate={{
-                  rotateY: isOpening ? 15 : 0,
-                  z: isOpening ? -50 : 0,
+                  rotateY: isOpening ? 8 : 0,
+                  scale: isOpening ? 0.99 : 1,
                 }}
                 transition={{ duration: 0.8 }}
               >
-                {/* Envelope Pattern */}
-                <div className="absolute inset-4 border-2 border-rose-300/30 rounded border-dashed"></div>
+                {/* Paper grain */}
+                <div
+                  className="absolute inset-0 rounded-[3px] mix-blend-multiply opacity-70 pointer-events-none"
+                  style={{ backgroundImage: `url("${PAPER_GRAIN}")` }}
+                />
 
-                {/* Wax Seal */}
-                <motion.div
-                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-gradient-to-br from-red-600 to-red-700 rounded-full shadow-lg flex items-center justify-center"
-                  animate={{
-                    scale: isHovered ? 1.1 : 1,
-                    rotate: isHovered ? 5 : 0,
-                  }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <div className="text-white text-xl font-bold">💌</div>
-                </motion.div>
+                {/* Side-flap seam lines */}
+                <div
+                  className="absolute inset-0 rounded-[3px] pointer-events-none"
+                  style={SEAM_LINES_STYLE}
+                />
+
+                {/* Bottom flap fold shadow */}
+                <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-rose-900/10 to-transparent pointer-events-none" />
 
                 {/* Envelope Flap */}
                 <motion.div
-                  className="absolute top-0 left-0 w-full h-32 bg-gradient-to-br from-rose-300 to-pink-400 origin-top"
+                  className="absolute top-0 left-0 w-full h-[60%] origin-top z-20"
                   style={{
-                    clipPath: 'polygon(0 0, 100% 0, 50% 100%)',
+                    backgroundImage:
+                      'linear-gradient(160deg,#fce7ec 0%,#f6d3dc 60%,#eeb6c5 100%)',
+                    clipPath: 'polygon(0 0, 100% 0, 51% 100%, 49% 100%)',
+                    boxShadow: 'inset 0 -6px 10px -6px rgba(160,40,80,0.22)',
                   }}
                   animate={{
-                    rotateX: isOpening ? -180 : 0,
-                    z: isOpening ? 50 : 0,
+                    rotateX: isOpening ? -172 : 0,
                   }}
-                  transition={{ duration: 1, delay: isOpening ? 0.2 : 0 }}
+                  transition={{
+                    duration: 0.9,
+                    delay: isOpening ? 0.3 : 0,
+                    ease: [0.45, 0, 0.2, 1],
+                  }}
+                >
+                  <div
+                    className="absolute inset-0 mix-blend-multiply opacity-70"
+                    style={{ backgroundImage: `url("${PAPER_GRAIN}")` }}
+                  />
+                </motion.div>
+
+                {/* Soft shadow cast by the flap as it lifts */}
+                <motion.div
+                  className="absolute inset-x-8 top-1 h-6 rounded-full bg-black/20 blur-md pointer-events-none z-10"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: isOpening ? [0, 0.5, 0] : 0 }}
+                  transition={{ duration: 1, delay: 0.3 }}
                 />
+
+                {/* Wax Seal */}
+                <div className="absolute top-[60%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-30">
+                  <motion.div
+                    className="relative w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center"
+                    style={{ borderRadius: '43% 57% 61% 39% / 47% 41% 59% 53%' }}
+                    animate={{
+                      scale: isOpening ? 0 : isHovered ? 1.08 : 1,
+                      rotate: isOpening ? -28 : isHovered ? 4 : 0,
+                      opacity: isOpening ? 0 : 1,
+                    }}
+                    transition={{
+                      duration: isOpening ? 0.45 : 0.3,
+                      ease: isOpening ? 'backIn' : 'easeOut',
+                    }}
+                  >
+                    {/* Wax base */}
+                    <div
+                      className="absolute inset-0"
+                      style={{
+                        borderRadius: 'inherit',
+                        backgroundImage:
+                          'radial-gradient(circle at 32% 28%, #b23a4e 0%, #8b1a2b 45%, #5c0f1c 100%)',
+                        boxShadow:
+                          'inset 0 2px 3px rgba(255,255,255,0.25), inset 0 -4px 6px rgba(0,0,0,0.4), 0 3px 6px rgba(60,10,15,0.5)',
+                      }}
+                    />
+                    {/* Melted drips */}
+                    <div
+                      className="absolute -bottom-1 left-4 w-2.5 h-3 rotate-45"
+                      style={{
+                        borderRadius: '50% 50% 50% 0',
+                        backgroundImage:
+                          'radial-gradient(circle at 30% 25%, #96283a, #5c0f1c)',
+                      }}
+                    />
+                    <div
+                      className="absolute -bottom-1.5 right-5 w-2 h-2.5 rotate-12"
+                      style={{
+                        borderRadius: '50% 50% 50% 0',
+                        backgroundImage:
+                          'radial-gradient(circle at 30% 25%, #96283a, #5c0f1c)',
+                      }}
+                    />
+                    {/* Embossed monogram */}
+                    <span
+                      className="relative font-serif italic tracking-widest text-[11px] sm:text-sm text-[#f6d9df] select-none"
+                      style={{
+                        textShadow:
+                          '0 1px 0 rgba(255,255,255,0.2), 0 -1px 1px rgba(0,0,0,0.5)',
+                      }}
+                    >
+                      {monogram}
+                    </span>
+
+                    {/* Crack shards */}
+                    {SEAL_SHARDS.map((shard, i) => (
+                      <motion.div
+                        key={i}
+                        className="absolute w-2.5 h-2.5 pointer-events-none"
+                        style={{
+                          borderRadius: '30% 70% 60% 40% / 50%',
+                          backgroundImage:
+                            'radial-gradient(circle at 30% 25%, #96283a, #5c0f1c)',
+                        }}
+                        initial={{ x: 0, y: 0, opacity: 0, rotate: shard.rotate }}
+                        animate={
+                          isOpening
+                            ? {
+                                x: shard.x,
+                                y: shard.y,
+                                opacity: [0, 1, 0],
+                                rotate: shard.rotate + 50,
+                              }
+                            : { x: 0, y: 0, opacity: 0 }
+                        }
+                        transition={{ duration: 0.6, ease: 'easeOut' }}
+                      />
+                    ))}
+                  </motion.div>
+                </div>
               </motion.div>
 
               {/* Letter Inside */}
               <AnimatePresence>
                 {isOpening && (
                   <motion.div
-                    initial={{ y: 0, opacity: 0, scale: 0.8 }}
-                    animate={{ y: -40, opacity: 1, scale: 1 }}
-                    transition={{ duration: 1, delay: 0.5 }}
-                    className="absolute top-8 left-1/2 -translate-x-1/2 w-72 h-54 sm:w-80 sm:h-58 bg-gradient-to-br from-yellow-50 to-white rounded-lg shadow-xl border border-rose-200"
+                    initial={{ y: 6, opacity: 0, scale: 0.92, rotate: -2 }}
+                    animate={{ y: -52, opacity: 1, scale: 1, rotate: 0 }}
+                    transition={{
+                      duration: 0.9,
+                      delay: 0.55,
+                      ease: [0.16, 1, 0.3, 1],
+                    }}
+                    className="absolute top-8 left-1/2 -translate-x-1/2 w-72 h-54 sm:w-80 sm:h-58 rounded-[3px] border border-[#f3d9df] z-20"
+                    style={{
+                      backgroundImage:
+                        'linear-gradient(160deg,#fffbfc 0%,#fdf0f3 100%)',
+                      boxShadow:
+                        '0 1px 1px rgba(160,40,80,0.1), 0 16px 30px -10px rgba(160,40,80,0.25)',
+                    }}
                   >
                     <div className="p-6 sm:p-8 h-full flex flex-col justify-center text-center">
                       <div className="text-rose-500 text-2xl sm:text-3xl mb-4">
@@ -193,9 +343,9 @@ export const LetterAnimation = ({
                       <p className="text-sm sm:text-base text-gray-600 mb-4">
                         {t('letter.invitation-title')}
                       </p>
-                      <div className="text-xs sm:text-sm text-gray-500 font-serif italic">
+                      {/* <div className="text-xs sm:text-sm text-gray-500 font-serif italic">
                         &ldquo;{t('letter.invitation-quote')}&rdquo;
-                      </div>
+                      </div> */}
                     </div>
                   </motion.div>
                 )}
@@ -222,7 +372,7 @@ export const LetterAnimation = ({
                           repeat: Infinity,
                           repeatDelay: 2,
                         }}
-                        className="absolute top-1/2 left-1/2 text-yellow-400 text-sm pointer-events-none"
+                        className="absolute top-1/2 left-1/2 text-amber-300 text-sm pointer-events-none"
                       >
                         ✨
                       </motion.div>

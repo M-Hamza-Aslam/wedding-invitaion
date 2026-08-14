@@ -8,7 +8,7 @@ export const allLangs = [
     label: 'English',
     countryCode: 'EN',
     adapterLocale: 'en',
-    numberFormat: { code: 'id-ID', currency: 'IDR' },
+    numberFormat: { code: 'en-US', currency: 'IDR' },
   },
   {
     value: 'id',

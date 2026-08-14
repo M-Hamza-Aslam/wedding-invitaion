@@ -94,12 +94,16 @@ export default function HomeView() {
           date={WEDDING_CONFIG.date}
           venue={WEDDING_CONFIG.venue}
         />
+      </section>
+
+      {/* Venue & Location */}
+      <section id="venue" className="relative">
+        <VenueInformation venue={WEDDING_CONFIG.venue} />
         <CountdownTimer targetDate={WEDDING_CONFIG.date} />
       </section>
 
-      {/* Venue Information */}
-      <section id="venue" className="relative">
-        <VenueInformation venue={WEDDING_CONFIG.venue} />
+      {/* Event Schedule */}
+      <section className="relative">
         <EventSchedule />
       </section>
 

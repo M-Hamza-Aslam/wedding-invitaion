@@ -140,7 +140,7 @@ export const CountdownTimer = ({ targetDate }: CountdownTimerProps) => {
         </div>
 
         {/* Message */}
-        <motion.div
+        {/* <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: inView ? 1 : 0, y: inView ? 0 : 20 }}
           transition={{ duration: 0.8, delay: 0.8 }}
@@ -157,7 +157,7 @@ export const CountdownTimer = ({ targetDate }: CountdownTimerProps) => {
                 : t('details.moment-arrived')}
             </p>
           </div>
-        </motion.div>
+        </motion.div> */}
       </div>
     </div>
   );
