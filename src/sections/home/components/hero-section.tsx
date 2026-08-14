@@ -18,17 +18,21 @@ export const HeroSection = ({
   const { t } = useTranslation('home');
 
   return (
-    <div className="h-screen bg-gradient-to-br from-rose-100 via-pink-50 to-purple-100 relative overflow-hidden">
-      {/* Background Decorations — slow breathing motion */}
+    <div className="h-dvh bg-gradient-to-br from-rose-100 via-pink-50 to-purple-100 relative overflow-hidden">
+      {/* Background Decorations — slow breathing motion.
+          Only `opacity`/`scale` are animated (no `x`/`y` translation) since
+          animating position on a `blur-3xl` element is what was making
+          mobile GPUs choke — every frame has to re-rasterize the blur at
+          a new offset. Opacity/scale alone stay compositor-cheap. */}
       <div className="absolute inset-0">
         <motion.div
           className="absolute -top-40 -right-40 w-80 h-80 bg-rose-200/30 rounded-full blur-3xl"
-          animate={{ x: [0, 20, 0], y: [0, 30, 0], scale: [1, 1.1, 1] }}
+          animate={{ scale: [1, 1.1, 1] }}
           transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
         />
         <motion.div
           className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-200/30 rounded-full blur-3xl"
-          animate={{ x: [0, -20, 0], y: [0, -30, 0], scale: [1, 1.15, 1] }}
+          animate={{ scale: [1, 1.15, 1] }}
           transition={{
             duration: 12,
             repeat: Infinity,
@@ -41,7 +45,7 @@ export const HeroSection = ({
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96">
           <motion.div
             className="w-full h-full bg-pink-200/20 rounded-full blur-3xl"
-            animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.35, 0.2] }}
+            animate={{ opacity: [0.2, 0.35, 0.2] }}
             transition={{
               duration: 8,
               repeat: Infinity,
@@ -52,26 +56,26 @@ export const HeroSection = ({
         </div>
       </div>
 
-      {/* Drifting Petals */}
+      {/* Drifting Petals — 6, still no `rotate`, to keep the per-frame
+          compositing cost low enough for weaker mobile GPUs. */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(7)].map((_, i) => (
+        {[...Array(6)].map((_, i) => (
           <motion.div
             key={i}
-            initial={{ y: '-10vh', opacity: 0, rotate: 0 }}
+            initial={{ y: '-10vh', opacity: 0 }}
             animate={{
               y: '110vh',
               opacity: [0, 0.8, 0.8, 0],
-              rotate: [0, 180, 360],
-              x: [0, 30, -30, 0],
+              x: [0, 20, -20, 0],
             }}
             transition={{
-              duration: 12 + i * 2,
+              duration: 14 + i * 2,
               repeat: Infinity,
               ease: 'linear',
-              delay: i * 1.8,
+              delay: i * 3,
             }}
             className="absolute text-rose-300 text-lg sm:text-xl"
-            style={{ left: `${8 + i * 13}%` }}
+            style={{ left: `${8 + i * 15}%` }}
           >
             🌸
           </motion.div>
