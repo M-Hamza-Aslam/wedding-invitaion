@@ -3,19 +3,18 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  /* The whole site is a fixed light/pink theme — none of it is dark-mode
+     aware. Without this, browsers still apply native dark styling to form
+     controls (inputs/selects) when the visitor's OS is in dark mode, which
+     renders as barely-visible light text on the white input fields. */
+  color-scheme: light;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-poppins: var(--font-poppins);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-amiri: var(--font-amiri);
 }
 
 body {

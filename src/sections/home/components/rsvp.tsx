@@ -5,42 +5,77 @@ import { motion } from 'motion/react';
 import { useInView } from 'react-intersection-observer';
 import { useTranslation } from 'react-i18next';
 
+const CONTACTS = [
+  { name: 'Muhammad Aslam', relation: 'Father', phone: '+92-322-2562862' },
+  { name: 'Muhammad Usama', relation: 'Brother', phone: '+92-341-3128448' },
+  { name: 'Muhammad Haris', relation: 'Brother', phone: '+92-312-3898395' },
+];
+
+// Submits straight to FormSubmit.co — no backend of our own needed.
+// Each RSVP arrives as an email to this address. The very first submission
+// requires a one-time confirmation click from that inbox before FormSubmit
+// starts forwarding messages.
+const FORMSUBMIT_ENDPOINT = 'https://formsubmit.co/ajax/hamza.prolink@gmail.com';
+
 export const RSVP = () => {
   const { t } = useTranslation('home');
 
   const [formData, setFormData] = useState({
     name: '',
-    email: '',
     attendance: '',
-    guests: '1',
-    dietaryRestrictions: '',
+    phone: '',
     message: '',
   });
 
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
 
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.2,
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically send the data to your backend
-    setIsSubmitted(true);
+    setIsSending(true);
+    setSubmitError(false);
 
-    // Reset form after 3 seconds
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setFormData({
-        name: '',
-        email: '',
-        attendance: '',
-        guests: '1',
-        dietaryRestrictions: '',
-        message: '',
+    try {
+      const response = await fetch(FORMSUBMIT_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          _subject: `New RSVP from ${formData.name}`,
+          Name: formData.name,
+          Attending: formData.attendance === 'yes' ? 'Yes' : 'No',
+          Phone: formData.phone || '—',
+          Message: formData.message || '—',
+        }),
       });
-    }, 3000);
+
+      if (!response.ok) throw new Error('RSVP submission failed');
+
+      setIsSubmitted(true);
+
+      // Reset form after 3 seconds
+      setTimeout(() => {
+        setIsSubmitted(false);
+        setFormData({
+          name: '',
+          attendance: '',
+          phone: '',
+          message: '',
+        });
+      }, 3000);
+    } catch {
+      setSubmitError(true);
+    } finally {
+      setIsSending(false);
+    }
   };
 
   const handleChange = (
@@ -130,27 +165,8 @@ export const RSVP = () => {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-rose-400 focus:border-transparent outline-none transition-all duration-300"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-900 focus:ring-2 focus:ring-rose-400 focus:border-transparent outline-none transition-all duration-300"
                     placeholder={t('rsvp.full-name')}
-                  />
-                </div>
-                {/* Email */}
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-xs sm:text-sm font-medium text-gray-700 mb-2"
-                  >
-                    {t('rsvp.email-address')} *
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-rose-400 focus:border-transparent outline-none transition-all duration-300"
-                    placeholder={t('rsvp.email-address')}
                   />
                 </div>
                 {/* Attendance */}
@@ -167,56 +183,31 @@ export const RSVP = () => {
                     value={formData.attendance}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-rose-400 focus:border-transparent outline-none transition-all duration-300"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-900 focus:ring-2 focus:ring-rose-400 focus:border-transparent outline-none transition-all duration-300"
                   >
                     <option value="">{t('rsvp.please-select')}</option>
                     <option value="yes">{t('rsvp.yes-there')}</option>
                     <option value="no">{t('rsvp.no-cant')}</option>
                   </select>
                 </div>
-                {/* Number of Guests */}
-                {formData.attendance === 'yes' && (
-                  <div>
-                    <label
-                      htmlFor="guests"
-                      className="block text-xs sm:text-sm font-medium text-gray-700 mb-2"
-                    >
-                      {t('rsvp.number-guests')}
-                    </label>
-                    <select
-                      id="guests"
-                      name="guests"
-                      value={formData.guests}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-rose-400 focus:border-transparent outline-none transition-all duration-300"
-                    >
-                      <option value="1">1 {t('rsvp.guest-count')}</option>
-                      <option value="2">2 {t('rsvp.guests-count')}</option>
-                      <option value="3">3 {t('rsvp.guests-count')}</option>
-                      <option value="4">4 {t('rsvp.guests-count')}</option>
-                    </select>
-                  </div>
-                )}
-                {/* Dietary Restrictions */}
-                {formData.attendance === 'yes' && (
-                  <div>
-                    <label
-                      htmlFor="dietaryRestrictions"
-                      className="block text-xs sm:text-sm font-medium text-gray-700 mb-2"
-                    >
-                      {t('rsvp.dietary-restrictions')}
-                    </label>
-                    <input
-                      type="text"
-                      id="dietaryRestrictions"
-                      name="dietaryRestrictions"
-                      value={formData.dietaryRestrictions}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-rose-400 focus:border-transparent outline-none transition-all duration-300"
-                      placeholder={t('rsvp.dietary-placeholder')}
-                    />
-                  </div>
-                )}
+                {/* Phone Number */}
+                <div>
+                  <label
+                    htmlFor="phone"
+                    className="block text-xs sm:text-sm font-medium text-gray-700 mb-2"
+                  >
+                    {t('rsvp.phone-number')}
+                  </label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-900 focus:ring-2 focus:ring-rose-400 focus:border-transparent outline-none transition-all duration-300"
+                    placeholder={t('rsvp.phone-placeholder')}
+                  />
+                </div>
                 {/* Message */}
                 <div>
                   <label
@@ -231,17 +222,25 @@ export const RSVP = () => {
                     value={formData.message}
                     onChange={handleChange}
                     rows={4}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-rose-400 focus:border-transparent outline-none transition-all duration-300 resize-none"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white text-gray-900 focus:ring-2 focus:ring-rose-400 focus:border-transparent outline-none transition-all duration-300 resize-none"
                     placeholder={t('rsvp.message-placeholder')}
                   />
                 </div>
 
+                {/* Submit Error */}
+                {submitError && (
+                  <p className="text-xs sm:text-sm text-red-500 text-center">
+                    {t('rsvp.submit-error')}
+                  </p>
+                )}
+
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-rose-400 to-pink-500 text-white py-4 px-6 rounded-xl font-medium text-base sm:text-lg hover:from-rose-500 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                  disabled={isSending}
+                  className="w-full bg-gradient-to-r from-rose-400 to-pink-500 text-white py-4 px-6 rounded-xl font-medium text-base sm:text-lg hover:from-rose-500 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 disabled:opacity-60 disabled:hover:translate-y-0 disabled:cursor-not-allowed"
                 >
-                  {t('rsvp.send-rsvp')}
+                  {isSending ? t('rsvp.sending') : t('rsvp.send-rsvp')}
                 </button>
               </form>
             </div>
@@ -264,9 +263,6 @@ export const RSVP = () => {
                   <h4 className="font-semibold text-gray-800 text-sm sm:text-base">
                     {t('rsvp.deadline')}
                   </h4>
-                  <p className="text-gray-600 text-xs sm:text-sm">
-                    {t('rsvp.deadline-date')}
-                  </p>
                 </div>
               </div>
               <p className="text-gray-600 text-xs sm:text-sm">
@@ -289,40 +285,26 @@ export const RSVP = () => {
                   </p>
                 </div>
               </div>
-              <div className="space-y-2 text-xs sm:text-sm text-gray-600">
-                <p>📧 wedding@fihaa.my.id</p>
-                <p>📱 (555) 123-4567</p>
-              </div>
-            </div>
-
-            {/* Gift Registry */}
-            <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-2xl p-6 shadow-lg border border-amber-100">
-              <div className="flex items-center mb-4">
-                <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mr-4">
-                  <span className="text-amber-600 text-xl">🎁</span>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-gray-800 text-sm sm:text-base">
-                    {t('rsvp.gift-registry')}
-                  </h4>
-                  <p className="text-gray-600 text-xs sm:text-sm">
-                    {t('rsvp.presence-present')}
-                  </p>
-                </div>
-              </div>
-              <p className="text-gray-600 text-xs sm:text-sm mb-4">
-                {t('rsvp.registry-text')}
-              </p>
-              <div className="flex flex-wrap gap-2">
-                <span className="bg-white/60 px-3 py-1 rounded-full text-xs font-medium text-gray-700">
-                  Gank Now
-                </span>
-                <span className="bg-white/60 px-3 py-1 rounded-full text-xs font-medium text-gray-700">
-                  Fantia
-                </span>
-                <span className="bg-white/60 px-3 py-1 rounded-full text-xs font-medium text-gray-700">
-                  Trakteer
-                </span>
+              <div className="space-y-3 text-xs sm:text-sm text-gray-600">
+                {CONTACTS.map((contact) => (
+                  <div
+                    key={contact.phone}
+                    className="flex items-center justify-between gap-2"
+                  >
+                    <span>
+                      {contact.name}{' '}
+                      <span className="text-gray-400">
+                        ({contact.relation})
+                      </span>
+                    </span>
+                    <a
+                      href={`tel:${contact.phone}`}
+                      className="text-rose-600 font-medium whitespace-nowrap"
+                    >
+                      {contact.phone}
+                    </a>
+                  </div>
+                ))}
               </div>
             </div>
           </motion.div>

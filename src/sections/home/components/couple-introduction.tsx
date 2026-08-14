@@ -76,8 +76,11 @@ export const CoupleIntroduction = ({
             <p className="text-base sm:text-lg md:text-xl text-rose-600 mb-4 font-medium">
               {t('couple.the-bride')}
             </p>
-            <p className="text-sm sm:text-base md:text-lg text-gray-600 leading-relaxed max-w-md mx-auto lg:mx-0 lg:ml-auto">
-              {t('couple.bride-description')}
+            <p className="text-sm sm:text-base md:text-lg text-gray-600 font-medium">
+              {t('couple.daughter-of')} {t('letter.mr-and-mrs')} {bride.fatherName}
+            </p>
+            <p className="text-sm sm:text-base md:text-lg text-rose-500 mt-1">
+              {bride.profession}
             </p>
 
             {/* Decorative Elements */}
@@ -144,8 +147,11 @@ export const CoupleIntroduction = ({
             <p className="text-base sm:text-lg md:text-xl text-blue-600 mb-4 font-medium">
               {t('couple.the-groom')}
             </p>
-            <p className="text-sm sm:text-base md:text-lg text-gray-600 leading-relaxed max-w-md mx-auto lg:mx-0">
-              {t('couple.groom-description')}
+            <p className="text-sm sm:text-base md:text-lg text-gray-600 font-medium">
+              {t('couple.son-of')} {t('letter.mr-and-mrs')} {groom.fatherName}
+            </p>
+            <p className="text-sm sm:text-base md:text-lg text-blue-500 mt-1">
+              {groom.profession}
             </p>
 
             {/* Decorative Elements */}
@@ -157,7 +163,7 @@ export const CoupleIntroduction = ({
           </motion.div>
         </div>
 
-        {/* Love Quote */}
+        {/* Ayat / Dua */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: inView ? 1 : 0, y: inView ? 0 : 30 }}
@@ -165,10 +171,20 @@ export const CoupleIntroduction = ({
           className="text-center mt-16"
         >
           <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 max-w-2xl mx-auto shadow-lg border border-white/40">
-            <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-serif text-gray-700 italic mb-4">
-              {t('couple.love-quote')}
+            <p
+              dir="rtl"
+              lang="ar"
+              className="font-amiri text-xl sm:text-2xl md:text-3xl text-rose-600 mb-3 leading-relaxed"
+            >
+              اللَّهُمَّ أَلِّفْ بَيْنَ قُلُوبِهِمَا وَأَصْلِحْ ذَاتَ بَيْنِهِمَا
             </p>
-            <p className="text-gray-500 text-xs sm:text-sm">— Clannad</p>
+            <p className="text-sm sm:text-base text-gray-500 italic mb-2">
+              Ae Allah! In dono ke dilon mein mohabbat aur ulfat dal de, aur
+              inke darmiyan ka mu&apos;amala theek kar de.
+            </p>
+            <p className="text-gray-400 text-xs sm:text-sm">
+              — Hadith: Abu Dawud
+            </p>
           </div>
         </motion.div>
       </div>

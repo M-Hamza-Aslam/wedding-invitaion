@@ -3,11 +3,15 @@ export const WEDDING_CONFIG = {
   bride: {
     name: 'Aamna',
     fullName: 'Aamna Akhtar',
+    fatherName: "Akhtar",
+    profession: 'Bio Chemist',
     photo: '/assets/images/bride-circle.png',
   },
   groom: {
     name: 'Hamza',
     fullName: 'Muhammad Hamza Aslam',
+    fatherName: "Aslam",
+    profession: 'Software Engineer',
     photo: '/assets/images/groom-circle.png',
   },
   venue: {

@@ -3,11 +3,11 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useTranslation } from 'react-i18next';
-import { useSearchParams } from 'next/navigation';
 
 interface LetterAnimationProps {
   onOpen: () => void;
   coupleName: string;
+  fatherName: string;
 }
 
 // Tiny feTurbulence noise baked into a static SVG, used as a tiled
@@ -45,12 +45,9 @@ function getMonogram(coupleName: string) {
 export const LetterAnimation = ({
   onOpen,
   coupleName,
+  fatherName,
 }: LetterAnimationProps) => {
   const { t } = useTranslation('home');
-  const searchParams = useSearchParams();
-
-  const toName =
-    searchParams.get('to') || searchParams.get('toName') || t('letter.guest');
 
   const monogram = getMonogram(coupleName);
 
@@ -126,20 +123,18 @@ export const LetterAnimation = ({
             transition={{ duration: 1, delay: 0.5 }}
             className="mb-8 sm:mb-12"
           >
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif text-gray-800 mb-4">
-              {t('hero.welcome')}
+            <h1
+              dir="rtl"
+              lang="ar"
+              className="font-amiri text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-rose-700 mb-4 leading-relaxed"
+            >
+              بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
             </h1>
+            <p className="text-xs sm:text-sm font-medium uppercase tracking-[0.2em] text-rose-500/80 mb-3">
+              {t('letter.mr-and-mrs')} {fatherName}
+            </p>
             <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-md mx-auto">
-              {toName ? (
-                <>
-                  {t('letter.dear')}{' '}
-                  <span className="font-medium text-rose-600">{toName}</span>
-                  <br />
-                  {t('letter.you-are-invited')}
-                </>
-              ) : (
-                t('letter.you-are-invited')
-              )}
+              {t('letter.you-are-invited')}
             </p>
           </motion.div>
 
@@ -329,19 +324,11 @@ export const LetterAnimation = ({
                       <div className="text-rose-500 text-2xl sm:text-3xl mb-4">
                         💕
                       </div>
-                      {toName && (
-                        <p className="text-sm sm:text-base text-gray-600 mb-2">
-                          {t('letter.to')}:{' '}
-                          <span className="font-medium text-rose-600">
-                            {toName}
-                          </span>
-                        </p>
-                      )}
                       <h3 className="text-lg sm:text-xl font-serif text-gray-800 mb-2">
-                        {coupleName}
+                        {t('letter.mr-and-mrs')} {fatherName}
                       </h3>
                       <p className="text-sm sm:text-base text-gray-600 mb-4">
-                        {t('letter.invitation-title')}
+                        {t('letter.invitation-title', { coupleName })}
                       </p>
                       {/* <div className="text-xs sm:text-sm text-gray-500 font-serif italic">
                         &ldquo;{t('letter.invitation-quote')}&rdquo;

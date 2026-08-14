@@ -11,7 +11,6 @@ import {
   VenueInformation,
   EventSchedule,
   RSVP,
-  GalleryPreview,
   ClosingMessage,
   FloatingNavigation,
   NavigationFAB,
@@ -59,6 +58,7 @@ export default function HomeView() {
       <LetterAnimation
         onOpen={handleLetterOpen}
         coupleName={`${WEDDING_CONFIG.bride.name} & ${WEDDING_CONFIG.groom.name}`}
+        fatherName={WEDDING_CONFIG.groom.fatherName}
       />
     );
   }
@@ -105,11 +105,6 @@ export default function HomeView() {
       {/* Event Schedule */}
       <section className="relative">
         <EventSchedule />
-      </section>
-
-      {/* Gallery Preview */}
-      <section id="gallery" className="relative">
-        <GalleryPreview />
       </section>
 
       {/* RSVP Section */}

@@ -14,6 +14,10 @@ export function i18nOptions(lng = fallbackLng, ns = defaultNS) {
     defaultNS,
     fallbackNS: defaultNS,
     supportedLngs: languages,
+    // React already escapes interpolated values when rendering JSX text,
+    // so i18next's own HTML-escaping (which turns "&" into "&amp;") would
+    // otherwise double-encode and show up literally in the UI.
+    interpolation: { escapeValue: false },
   };
 }
 
