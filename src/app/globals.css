@@ -17,10 +17,24 @@
   --font-amiri: var(--font-amiri);
 }
 
+/* Several sections use large negative-offset decorative blobs and full-bleed
+   backgrounds; if any one of them (or a long unbreakable string, etc.)
+   ever creeps past the viewport edge on a narrow phone, the whole page
+   widens to fit it — and every `fixed` element anchored with `right-*`
+   (music player, nav FAB) then renders off-screen, since it's positioned
+   relative to that widened layout viewport, not the visible one. Clipping
+   horizontal overflow here keeps the page pinned to the device width no
+   matter what a descendant does. */
+html {
+  overflow-x: hidden;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-poppins), Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 * {

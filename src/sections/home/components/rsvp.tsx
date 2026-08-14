@@ -289,7 +289,7 @@ export const RSVP = () => {
                 {CONTACTS.map((contact) => (
                   <div
                     key={contact.phone}
-                    className="flex items-center justify-between gap-2"
+                    className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-0.5 sm:gap-2"
                   >
                     <span>
                       {contact.name}{' '}
@@ -299,7 +299,7 @@ export const RSVP = () => {
                     </span>
                     <a
                       href={`tel:${contact.phone}`}
-                      className="text-rose-600 font-medium whitespace-nowrap"
+                      className="text-rose-600 font-medium"
                     >
                       {contact.phone}
                     </a>
