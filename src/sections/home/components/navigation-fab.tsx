@@ -32,7 +32,7 @@ export default function NavigationFAB({
     <motion.div
       initial={{ opacity: 0, scale: 0, y: 100 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.8, type: 'spring', stiffness: 200 }}
+      transition={{ duration: 0.6, delay: 0.8, type: "spring" as const, stiffness: 200 }}
       className="fixed bottom-6 right-6 z-50"
     >
       {/* Progress Ring */}

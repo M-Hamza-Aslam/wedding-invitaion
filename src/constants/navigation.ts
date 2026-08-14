@@ -13,7 +13,11 @@ export const NAVIGATION_ANIMATIONS = {
     initial: { scale: 0, opacity: 0 },
     animate: { scale: 1, opacity: 1 },
     exit: { scale: 0, opacity: 0 },
-    transition: { duration: 0.3, type: 'spring', stiffness: 300 },
+    transition: {
+      duration: 0.3,
+      type: "spring" as const,
+      stiffness: 300,
+    },
   },
   icon: {
     active: {
@@ -25,45 +29,49 @@ export const NAVIGATION_ANIMATIONS = {
   },
   pulse: {
     animate: { scale: [1, 1.5, 1] },
-    transition: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
+    transition: {
+      duration: 2,
+      repeat: Infinity,
+      ease: "easeInOut" as const,
+    },
   },
 };
 
 export const NAVIGATION_SECTIONS = [
   {
-    id: 'hero',
-    labelKey: 'navigation.home',
-    icon: '🏠',
-    gradient: 'from-rose-500 to-pink-500',
+    id: "hero",
+    labelKey: "navigation.home",
+    icon: "🏠",
+    gradient: "from-rose-500 to-pink-500",
   },
   {
-    id: 'couple',
-    labelKey: 'navigation.couple',
-    icon: '💕',
-    gradient: 'from-pink-500 to-rose-500',
+    id: "couple",
+    labelKey: "navigation.couple",
+    icon: "💕",
+    gradient: "from-pink-500 to-rose-500",
   },
   {
-    id: 'details',
-    labelKey: 'navigation.details',
-    icon: '📅',
-    gradient: 'from-purple-500 to-indigo-500',
+    id: "details",
+    labelKey: "navigation.details",
+    icon: "📅",
+    gradient: "from-purple-500 to-indigo-500",
   },
   {
-    id: 'venue',
-    labelKey: 'navigation.venue',
-    icon: '📍',
-    gradient: 'from-indigo-500 to-blue-500',
+    id: "venue",
+    labelKey: "navigation.venue",
+    icon: "📍",
+    gradient: "from-indigo-500 to-blue-500",
   },
   {
-    id: 'gallery',
-    labelKey: 'navigation.gallery',
-    icon: '📸',
-    gradient: 'from-blue-500 to-cyan-500',
+    id: "gallery",
+    labelKey: "navigation.gallery",
+    icon: "📸",
+    gradient: "from-blue-500 to-cyan-500",
   },
   {
-    id: 'rsvp',
-    labelKey: 'navigation.rsvp',
-    icon: '✉️',
-    gradient: 'from-cyan-500 to-teal-500',
+    id: "rsvp",
+    labelKey: "navigation.rsvp",
+    icon: "✉️",
+    gradient: "from-cyan-500 to-teal-500",
   },
 ];
