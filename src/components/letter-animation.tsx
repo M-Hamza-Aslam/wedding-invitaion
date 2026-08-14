@@ -23,6 +23,22 @@ export const LetterAnimation = ({
   const [isOpening, setIsOpening] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
+  // Re-randomized on every hover (a user event, not render, so this stays
+  // out of the component's render body which must remain pure) so each
+  // sparkle burst scatters differently.
+  const [sparkleOffsets, setSparkleOffsets] = useState<
+    { x: number; y: number }[]
+  >(() => Array.from({ length: 8 }, () => ({ x: 0, y: 0 })));
+
+  const randomizeSparkles = () => {
+    setSparkleOffsets(
+      Array.from({ length: 8 }, () => ({
+        x: (Math.random() - 0.5) * 100,
+        y: (Math.random() - 0.5) * 100,
+      }))
+    );
+  };
+
   const handleClick = () => {
     setIsOpening(true);
     setTimeout(() => {
@@ -104,7 +120,10 @@ export const LetterAnimation = ({
             <motion.div
               className="relative cursor-pointer"
               onClick={handleClick}
-              onHoverStart={() => setIsHovered(true)}
+              onHoverStart={() => {
+                setIsHovered(true);
+                randomizeSparkles();
+              }}
               onHoverEnd={() => setIsHovered(false)}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -186,15 +205,15 @@ export const LetterAnimation = ({
               <AnimatePresence>
                 {isHovered && !isOpening && (
                   <>
-                    {[...Array(8)].map((_, i) => (
+                    {sparkleOffsets.map((offset, i) => (
                       <motion.div
                         key={i}
                         initial={{ opacity: 0, scale: 0 }}
                         animate={{
                           opacity: [0, 1, 0],
                           scale: [0, 1, 0],
-                          x: [0, (Math.random() - 0.5) * 100],
-                          y: [0, (Math.random() - 0.5) * 100],
+                          x: [0, offset.x],
+                          y: [0, offset.y],
                         }}
                         exit={{ opacity: 0 }}
                         transition={{

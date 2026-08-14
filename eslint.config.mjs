@@ -1,6 +1,10 @@
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { FlatCompat } from '@eslint/eslintrc';
+import importPlugin from 'eslint-plugin-import';
+import jsxA11y from 'eslint-plugin-jsx-a11y';
+import nextCoreWebVitals from 'eslint-config-next/core-web-vitals';
+import nextTypescript from 'eslint-config-next/typescript';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -13,16 +17,18 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
-  ...compat.extends(
-    'next/core-web-vitals',
-    'next/typescript',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:import/recommended',
-    'prettier',
-    'plugin:jsx-a11y/recommended'
-  ),
+  // eslint-config-next ships native flat configs as of v16; importing them
+  // directly avoids FlatCompat, which can't shim their plugin objects.
+  ...nextCoreWebVitals,
+  ...nextTypescript,
+  ...compat.extends('prettier'),
   {
+    // import/jsx-a11y plugins are already registered by nextCoreWebVitals
+    // above, so only their recommended *rules* are pulled in here to avoid
+    // ESLint's "Cannot redefine plugin" error on re-registration.
     rules: {
+      ...importPlugin.flatConfigs.recommended.rules,
+      ...jsxA11y.flatConfigs.recommended.rules,
       '@typescript-eslint/consistent-type-imports': 'error',
       '@typescript-eslint/no-unused-vars': 'error',
       'react/display-name': 'off',
